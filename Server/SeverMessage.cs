@@ -46,6 +46,7 @@ namespace Server
             // 取得用戶端資訊
             string clientInfo = client.Client.RemoteEndPoint.ToString();
             Console.WriteLine("客戶端 " + clientInfo + " 已連線");
+            InitCurrentPerson(client);
 
             // 設定編碼方式
             Encoding encoding = Encoding.UTF8;
@@ -53,35 +54,65 @@ namespace Server
             // 處理客戶端發送的訊息
             while (true)
             {
-                // 讀取客戶端發送的訊息
-                byte[] buffer = new byte[1024];
-                int n = client.GetStream().Read(buffer, 0, buffer.Length);
-                string message = encoding.GetString(buffer, 0, n);
-                Console.WriteLine("客戶端 " + clientInfo + " 傳送了訊息：" + message);
-
-                // 轉發訊息給其他客戶端
-                foreach (TcpClient c in clients)
+                try
                 {
-                    if (c != client)
+                    // 讀取客戶端發送的訊息
+                    byte[] buffer = new byte[1024];
+                    int n = client.GetStream().Read(buffer, 0, buffer.Length);
+                    string message = encoding.GetString(buffer, 0, n);
+                    Console.WriteLine("客戶端 " + clientInfo + " 傳送了訊息：" + message);
+
+                    if (message.Contains("exit"))
                     {
-                        c.GetStream().Write(buffer, 0, n);
+                        // 關閉連線
+                        // client.Close();
+                        Write2AllClients(client, $"{clientInfo} 斷開連線了\r\n");
+                        int index = clients.FindIndex(v => v == client);
+                        clients.RemoveAt(index);
+                        Console.WriteLine("客戶端 " + clientInfo + " 已斷線");
+                        break;
                     }
-                }
 
-                if (message == "exit")
+                    // 轉發訊息給其他客戶端
+                    Write2AllClients(client, clientInfo + "：" + message);
+                }
+                catch (Exception ex)
                 {
-                    // 關閉連線
-                    // client.Close();
-                    int index = clients.FindIndex(v => v.Client.RemoteEndPoint.ToString() == clientInfo);
+                    Write2AllClients(client, $"{clientInfo} 斷開連線了\r\n");
+                    int index = clients.FindIndex(v => v == client);
                     clients.RemoveAt(index);
                     Console.WriteLine("客戶端 " + clientInfo + " 已斷線");
+                    break;
                 }
             }
-
-            
-            
         }
 
-        
+        // 發送文字訊息給其他用戶
+        static void Write2AllClients(TcpClient client, byte[] buffer, int size)
+        {
+            foreach (TcpClient c in clients)
+                if (c != client)
+                    c.GetStream().Write(buffer, 0, size);
+        }
+        static void Write2AllClients(TcpClient client, string message)
+        {
+            byte[] data = Encoding.UTF8.GetBytes(message);
+            foreach (TcpClient c in clients)
+                if (c != client)
+                    c.GetStream().Write(data, 0, data.Length);
+        }
+
+        // 初始化/顯示目前在線人員
+        static void InitCurrentPerson(TcpClient client)
+        {
+            byte[] data;
+            data = Encoding.UTF8.GetBytes("目前在線的人：\r\n");
+            client.GetStream().Write(data, 0, data.Length);
+            foreach (var c in clients)
+            {
+                data = Encoding.UTF8.GetBytes(c.Client.RemoteEndPoint.ToString() + "\r\n");
+                if (c != client) client.GetStream().Write(data, 0, data.Length);
+            }
+        }
     }
 }

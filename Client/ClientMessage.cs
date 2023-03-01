@@ -16,7 +16,8 @@ public class Client
         try
         {
             client = new TcpClient(serverIP, serverPort);
-            Console.WriteLine("Connected to server!");
+            Console.WriteLine("已連接到伺服端!");
+            Console.WriteLine("可以隨便打字");
 
             // 取得網路串流
             NetworkStream stream = client.GetStream();
@@ -34,7 +35,6 @@ public class Client
             string message = "";
             while (message != "exit")
             {
-                Console.WriteLine("Message: ");
                 message = Console.ReadLine();
                 SendMessage(message);
             }
@@ -79,7 +79,7 @@ public class Client
                 }
 
                 // 顯示伺服器回傳的訊息
-                Console.WriteLine("Server: " + message);
+                Console.WriteLine(message);
             }
         }
         catch (Exception ex)
