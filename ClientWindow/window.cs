@@ -19,6 +19,7 @@ namespace ClientWindow
 
         private static TcpClient client = null;
         private static StreamWriter writer = null;
+        public static RichTextBox richTextBox = new RichTextBox();
 
         public window()
         {
@@ -46,6 +47,9 @@ namespace ClientWindow
                     writer = new StreamWriter(stream);
                     writer.AutoFlush = true;
 
+                    // 開啟一個執行緒處理伺服器回傳的訊息
+                    Thread thread = new Thread(ReceiveMessage);
+                    thread.Start();
                 }
                 else
                 {
@@ -61,10 +65,69 @@ namespace ClientWindow
             }
         }
 
+        // 傳送訊息給伺服器
+        private static void SendMessage(object message)
+        {
+            writer.WriteLine(message);
+        }
+
+        // 接收伺服器回傳的訊息
+        private void ReceiveMessage()
+        {
+            try
+            {
+                // 取得網路串流
+                NetworkStream stream = client.GetStream();
+
+                // 設定編碼方式
+                StreamReader reader = new StreamReader(stream);
+
+                while (true)
+                {
+                    // 讀取伺服器回傳的訊息
+                    string message = reader.ReadLine();
+
+                    if (message == null)
+                    {
+                        Console.WriteLine("Disconnected from server.");
+                        break;
+                    }
+
+                    // 顯示伺服器回傳的訊息
+                    Console.WriteLine(message);
+                    UpdateRichTextBox(message + "\n");
+                    //Message_richTextBox.AppendText(message + "\n");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        private void UpdateRichTextBox(string message)
+        {
+            if (Message_richTextBox.InvokeRequired)
+            {
+                Message_richTextBox.Invoke(new Action<string>(UpdateRichTextBox), message);
+                return;
+            }
+
+            Message_richTextBox.AppendText(message);
+        }
+
         private void Message_richTextBox_TextChanged(object sender, EventArgs e)
         {
             Message_richTextBox.SelectionStart = Message_richTextBox.Text.Length;
             Message_richTextBox.ScrollToCaret();
+        }
+
+        private void SendMessage_button_Click(object sender, EventArgs e)
+        {
+            string SendText = SendMessage_textBox.Text;
+            SendMessage(SendText);
+            Message_richTextBox.AppendText(SendText + "\n");
+            SendMessage_textBox.Clear();
         }
     }
 }

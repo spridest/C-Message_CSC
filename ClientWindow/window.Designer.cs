@@ -110,6 +110,7 @@
             this.SendMessage_button.TabIndex = 5;
             this.SendMessage_button.Text = "發送";
             this.SendMessage_button.UseVisualStyleBackColor = true;
+            this.SendMessage_button.Click += new System.EventHandler(this.SendMessage_button_Click);
             // 
             // window
             // 
@@ -138,7 +139,7 @@
         private System.Windows.Forms.TextBox Port_textBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button Connect_button1;
-        private System.Windows.Forms.RichTextBox Message_richTextBox;
+        public System.Windows.Forms.RichTextBox Message_richTextBox;
         private System.Windows.Forms.TextBox SendMessage_textBox;
         private System.Windows.Forms.Button SendMessage_button;
     }
