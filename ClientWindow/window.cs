@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace ClientWindow
 {
@@ -94,6 +95,9 @@ namespace ClientWindow
                     }
 
                     // 顯示伺服器回傳的訊息
+
+                    //Message JsonMessage = JsonConvert.DeserializeObject<Message>(message); // 解析Json
+
                     Console.WriteLine(message);
                     UpdateRichTextBox(message + "\n");
                     //Message_richTextBox.AppendText(message + "\n");
@@ -124,10 +128,27 @@ namespace ClientWindow
 
         private void SendMessage_button_Click(object sender, EventArgs e)
         {
+
             string SendText = SendMessage_textBox.Text;
+            //Message message = new Message()
+            //{
+            //    Type = 0,
+            //    Content = SendText
+            //};
+            //string json = JsonConvert.SerializeObject(message);
+
             SendMessage(SendText);
-            Message_richTextBox.AppendText(SendText + "\n");
+            Message_richTextBox.AppendText("自己：" + SendText + "\n");
             SendMessage_textBox.Clear();
+        }
+
+        class Message
+        {
+            public int Type { get; set; } // 0:text、1:image
+            public string Sender { get; set; }
+            public string Receiver { get; set; }
+            public string Content { get; set; }
+            public DateTime Timestamp { get; set; }
         }
     }
 }

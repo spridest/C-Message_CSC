@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using System.Linq;
 
 
@@ -60,6 +61,7 @@ namespace Server
                     byte[] buffer = new byte[1024];
                     int n = client.GetStream().Read(buffer, 0, buffer.Length);
                     string message = encoding.GetString(buffer, 0, n);
+
                     Console.WriteLine("客戶端 " + clientInfo + " 傳送了訊息：" + message);
 
                     if (message.Contains("exit"))
@@ -114,5 +116,7 @@ namespace Server
                 if (c != client) client.GetStream().Write(data, 0, data.Length);
             }
         }
+
+        
     }
 }
