@@ -136,10 +136,12 @@ namespace ClientWindow
             //    Content = SendText
             //};
             //string json = JsonConvert.SerializeObject(message);
-
-            SendMessage(SendText);
-            Message_richTextBox.AppendText("自己：" + SendText + "\n");
-            SendMessage_textBox.Clear();
+            if (SendText != "")
+            {
+                SendMessage(SendText);
+                Message_richTextBox.AppendText("自己：" + SendText + "\n");
+                SendMessage_textBox.Clear();
+            }
         }
 
         class Message
@@ -149,6 +151,15 @@ namespace ClientWindow
             public string Receiver { get; set; }
             public string Content { get; set; }
             public DateTime Timestamp { get; set; }
+        }
+
+        private void SendMessage_textBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.SuppressKeyPress = true;
+                SendMessage_button.PerformClick();
+            }
         }
     }
 }

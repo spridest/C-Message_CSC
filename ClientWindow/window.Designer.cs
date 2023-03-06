@@ -36,13 +36,15 @@
             this.Message_richTextBox = new System.Windows.Forms.RichTextBox();
             this.SendMessage_textBox = new System.Windows.Forms.TextBox();
             this.SendMessage_button = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // IP_textBox
             // 
             this.IP_textBox.Location = new System.Drawing.Point(70, 12);
             this.IP_textBox.Name = "IP_textBox";
-            this.IP_textBox.Size = new System.Drawing.Size(228, 25);
+            this.IP_textBox.Size = new System.Drawing.Size(91, 25);
             this.IP_textBox.TabIndex = 0;
             this.IP_textBox.Text = "127.0.0.1";
             // 
@@ -58,7 +60,7 @@
             // 
             // Port_textBox
             // 
-            this.Port_textBox.Location = new System.Drawing.Point(384, 12);
+            this.Port_textBox.Location = new System.Drawing.Point(251, 12);
             this.Port_textBox.Name = "Port_textBox";
             this.Port_textBox.Size = new System.Drawing.Size(59, 25);
             this.Port_textBox.TabIndex = 0;
@@ -68,7 +70,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.label2.Location = new System.Drawing.Point(304, 12);
+            this.label2.Location = new System.Drawing.Point(171, 12);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(74, 25);
             this.label2.TabIndex = 1;
@@ -101,6 +103,7 @@
             this.SendMessage_textBox.Name = "SendMessage_textBox";
             this.SendMessage_textBox.Size = new System.Drawing.Size(456, 85);
             this.SendMessage_textBox.TabIndex = 4;
+            this.SendMessage_textBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SendMessage_textBox_KeyDown);
             // 
             // SendMessage_button
             // 
@@ -112,6 +115,24 @@
             this.SendMessage_button.UseVisualStyleBackColor = true;
             this.SendMessage_button.Click += new System.EventHandler(this.SendMessage_button_Click);
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(396, 12);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(59, 25);
+            this.textBox1.TabIndex = 0;
+            this.textBox1.Text = "呵呵";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.label3.Location = new System.Drawing.Point(316, 12);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(72, 25);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "匿名：";
+            // 
             // window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -121,7 +142,9 @@
             this.Controls.Add(this.SendMessage_textBox);
             this.Controls.Add(this.Message_richTextBox);
             this.Controls.Add(this.Connect_button1);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Port_textBox);
             this.Controls.Add(this.IP_textBox);
@@ -142,6 +165,8 @@
         public System.Windows.Forms.RichTextBox Message_richTextBox;
         private System.Windows.Forms.TextBox SendMessage_textBox;
         private System.Windows.Forms.Button SendMessage_button;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label3;
     }
 }
 
