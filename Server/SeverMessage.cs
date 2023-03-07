@@ -13,6 +13,15 @@ namespace Server
 {
     class Program
     {
+        class Message
+        {
+            public int Type { get; set; } // 0:text、1:image
+            public string Sender { get; set; }
+            public string SenderIP { get; set; }
+            public string Content { get; set; }
+            public DateTime Timestamp { get; set; }
+        }
+
         // 儲存所有客戶端連線
         static List<TcpClient> clients = new List<TcpClient>();
 
@@ -62,25 +71,37 @@ namespace Server
                     int n = client.GetStream().Read(buffer, 0, buffer.Length);
                     string message = encoding.GetString(buffer, 0, n);
 
-                    Console.WriteLine("客戶端 " + clientInfo + " 傳送了訊息：" + message);
+                    Message MessageClass = JsonConvert.DeserializeObject<Message>(message);
 
-                    if (message.Contains("exit"))
-                    {
-                        // 關閉連線
-                        // client.Close();
-                        Write2AllClients(client, $"{clientInfo} 斷開連線了\r\n");
-                        int index = clients.FindIndex(v => v == client);
-                        clients.RemoveAt(index);
-                        Console.WriteLine("客戶端 " + clientInfo + " 已斷線");
-                        break;
-                    }
+                    Console.WriteLine($"客戶端：{clientInfo} 傳送了訊息：{MessageClass.Content}");
+
+                    //if (MessageClass.Content.Contains("exit"))
+                    //{
+                    //    // 關閉連線
+                    //    // client.Close();
+                    //    ServerWrite2Client(client, $"{clientInfo} 斷開連線了\r\n", "Other");
+                    //    int index = clients.FindIndex(v => v == client);
+                    //    clients.RemoveAt(index);
+                    //    Console.WriteLine("客戶端 " + clientInfo + " 已斷線");
+                    //    break;
+                    //}
 
                     // 轉發訊息給其他客戶端
-                    Write2AllClients(client, clientInfo + "：" + message);
+                    if (MessageClass.Type == 0) // 文字訊息處理
+                    {
+                        MessageClass.SenderIP = clientInfo;
+                        string json = JsonConvert.SerializeObject(MessageClass);
+                        Write2AllClients(client, json + "\r\n");
+                    }
+                    else if (MessageClass.Type == 1) // 圖片訊息處理
+                    {
+
+                    }
+
                 }
                 catch (Exception ex)
                 {
-                    Write2AllClients(client, $"{clientInfo} 斷開連線了\r\n");
+                    ServerWrite2Client(client, $"{clientInfo} 斷開連線了\r\n", "Other");
                     int index = clients.FindIndex(v => v == client);
                     clients.RemoveAt(index);
                     Console.WriteLine("客戶端 " + clientInfo + " 已斷線");
@@ -104,19 +125,44 @@ namespace Server
                     c.GetStream().Write(data, 0, data.Length);
         }
 
+        static void ServerWrite2Client(TcpClient client, string message, string ForWho)
+        {
+            // ForHow => Single 只傳給自己
+            // ForHow => Other 只傳給除了自己的
+            Message MessageClass = new Message()
+            {
+                Type = 0,
+                Sender = "Server",
+                Content = message,
+                Timestamp = DateTime.Now
+            };
+
+            string json = JsonConvert.SerializeObject(MessageClass) + "\r\n";
+            byte[] data = Encoding.UTF8.GetBytes(json);
+
+
+            if (ForWho == "Single")
+            {
+                client.GetStream().Write(data, 0, data.Length);
+            }
+            else if (ForWho == "Other")
+            {
+                foreach (TcpClient c in clients)
+                    if (c != client)
+                        c.GetStream().Write(data, 0, data.Length);
+            }
+            
+        }
+
         // 初始化/顯示目前在線人員
         static void InitCurrentPerson(TcpClient client)
         {
-            byte[] data;
-            data = Encoding.UTF8.GetBytes("目前在線的人：\r\n");
-            client.GetStream().Write(data, 0, data.Length);
+            string s = "目前在線的人\r\n";
             foreach (var c in clients)
             {
-                data = Encoding.UTF8.GetBytes(c.Client.RemoteEndPoint.ToString() + "\r\n");
-                if (c != client) client.GetStream().Write(data, 0, data.Length);
+                s = s + c.Client.RemoteEndPoint.ToString() + "\r\n";
             }
+            ServerWrite2Client(client, s, "Single");
         }
-
-        
     }
 }

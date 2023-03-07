@@ -36,7 +36,7 @@
             this.Message_richTextBox = new System.Windows.Forms.RichTextBox();
             this.SendMessage_textBox = new System.Windows.Forms.TextBox();
             this.SendMessage_button = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.ClientName_textBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
@@ -91,37 +91,37 @@
             // 
             this.Message_richTextBox.Location = new System.Drawing.Point(18, 54);
             this.Message_richTextBox.Name = "Message_richTextBox";
-            this.Message_richTextBox.Size = new System.Drawing.Size(560, 379);
+            this.Message_richTextBox.Size = new System.Drawing.Size(560, 402);
             this.Message_richTextBox.TabIndex = 3;
             this.Message_richTextBox.Text = "";
             this.Message_richTextBox.TextChanged += new System.EventHandler(this.Message_richTextBox_TextChanged);
             // 
             // SendMessage_textBox
             // 
-            this.SendMessage_textBox.Location = new System.Drawing.Point(18, 439);
+            this.SendMessage_textBox.Location = new System.Drawing.Point(18, 462);
             this.SendMessage_textBox.Multiline = true;
             this.SendMessage_textBox.Name = "SendMessage_textBox";
-            this.SendMessage_textBox.Size = new System.Drawing.Size(456, 85);
+            this.SendMessage_textBox.Size = new System.Drawing.Size(419, 62);
             this.SendMessage_textBox.TabIndex = 4;
             this.SendMessage_textBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SendMessage_textBox_KeyDown);
             // 
             // SendMessage_button
             // 
-            this.SendMessage_button.Location = new System.Drawing.Point(480, 439);
+            this.SendMessage_button.Location = new System.Drawing.Point(443, 462);
             this.SendMessage_button.Name = "SendMessage_button";
-            this.SendMessage_button.Size = new System.Drawing.Size(98, 85);
+            this.SendMessage_button.Size = new System.Drawing.Size(72, 62);
             this.SendMessage_button.TabIndex = 5;
             this.SendMessage_button.Text = "發送";
             this.SendMessage_button.UseVisualStyleBackColor = true;
             this.SendMessage_button.Click += new System.EventHandler(this.SendMessage_button_Click);
             // 
-            // textBox1
+            // ClientName_textBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(396, 12);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(59, 25);
-            this.textBox1.TabIndex = 0;
-            this.textBox1.Text = "呵呵";
+            this.ClientName_textBox.Location = new System.Drawing.Point(396, 12);
+            this.ClientName_textBox.Name = "ClientName_textBox";
+            this.ClientName_textBox.Size = new System.Drawing.Size(59, 25);
+            this.ClientName_textBox.TabIndex = 0;
+            this.ClientName_textBox.Text = "呵呵";
             // 
             // label3
             // 
@@ -144,7 +144,7 @@
             this.Controls.Add(this.Connect_button1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.ClientName_textBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Port_textBox);
             this.Controls.Add(this.IP_textBox);
@@ -165,7 +165,7 @@
         public System.Windows.Forms.RichTextBox Message_richTextBox;
         private System.Windows.Forms.TextBox SendMessage_textBox;
         private System.Windows.Forms.Button SendMessage_button;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox ClientName_textBox;
         private System.Windows.Forms.Label label3;
     }
 }

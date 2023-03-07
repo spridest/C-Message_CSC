@@ -20,6 +20,7 @@ namespace ClientWindow
 
         private static TcpClient client = null;
         private static StreamWriter writer = null;
+        private static string ClientName = null;
         public static RichTextBox richTextBox = new RichTextBox();
 
         public window()
@@ -47,6 +48,9 @@ namespace ClientWindow
                     StreamReader reader = new StreamReader(stream);
                     writer = new StreamWriter(stream);
                     writer.AutoFlush = true;
+
+                    // 設定名稱
+                    ClientName = ClientName_textBox.Text;
 
                     // 開啟一個執行緒處理伺服器回傳的訊息
                     Thread thread = new Thread(ReceiveMessage);
@@ -96,10 +100,10 @@ namespace ClientWindow
 
                     // 顯示伺服器回傳的訊息
 
-                    //Message JsonMessage = JsonConvert.DeserializeObject<Message>(message); // 解析Json
+                    Message JsonMessage = JsonConvert.DeserializeObject<Message>(message); // 解析Json
 
                     Console.WriteLine(message);
-                    UpdateRichTextBox(message + "\n");
+                    UpdateRichTextBox($"[{JsonMessage.Timestamp}]{JsonMessage.Sender} {JsonMessage.SenderIP}：\n{JsonMessage.Content}\n");
                     //Message_richTextBox.AppendText(message + "\n");
                 }
             }
@@ -130,27 +134,20 @@ namespace ClientWindow
         {
 
             string SendText = SendMessage_textBox.Text;
-            //Message message = new Message()
-            //{
-            //    Type = 0,
-            //    Content = SendText
-            //};
-            //string json = JsonConvert.SerializeObject(message);
+            Message message = new Message()
+            {
+                Type = 0,
+                Sender = ClientName,
+                Content = SendText,
+                Timestamp = DateTime.Now
+            };
+            string json = JsonConvert.SerializeObject(message);
             if (SendText != "")
             {
-                SendMessage(SendText);
-                Message_richTextBox.AppendText("自己：" + SendText + "\n");
+                SendMessage(json);
+                Message_richTextBox.AppendText($"自己：\n{SendText}\n");
                 SendMessage_textBox.Clear();
             }
-        }
-
-        class Message
-        {
-            public int Type { get; set; } // 0:text、1:image
-            public string Sender { get; set; }
-            public string Receiver { get; set; }
-            public string Content { get; set; }
-            public DateTime Timestamp { get; set; }
         }
 
         private void SendMessage_textBox_KeyDown(object sender, KeyEventArgs e)
@@ -161,5 +158,16 @@ namespace ClientWindow
                 SendMessage_button.PerformClick();
             }
         }
+
+        class Message
+        {
+            public int Type { get; set; } // 0:text、1:image
+            public string Sender { get; set; }
+            public string SenderIP { get; set; }
+            public string Content { get; set; }
+            public DateTime Timestamp { get; set; }
+        }
+
+
     }
 }
