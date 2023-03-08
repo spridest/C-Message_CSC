@@ -19,6 +19,7 @@ namespace Server
             public string Sender { get; set; }
             public string SenderIP { get; set; }
             public string Content { get; set; }
+            public string ImageData { get; set; }
             public DateTime Timestamp { get; set; }
         }
 
@@ -67,10 +68,11 @@ namespace Server
                 try
                 {
                     // 讀取客戶端發送的訊息
-                    byte[] buffer = new byte[1024];
+                    byte[] buffer = new byte[9999999];
                     int n = client.GetStream().Read(buffer, 0, buffer.Length);
                     string message = encoding.GetString(buffer, 0, n);
 
+                    Console.WriteLine(message);
                     Message MessageClass = JsonConvert.DeserializeObject<Message>(message);
 
                     Console.WriteLine($"客戶端：{clientInfo} 傳送了訊息：{MessageClass.Content}");
@@ -95,7 +97,9 @@ namespace Server
                     }
                     else if (MessageClass.Type == 1) // 圖片訊息處理
                     {
-
+                        // MessageClass.SenderIP = clientInfo;
+                        string json = JsonConvert.SerializeObject(MessageClass);
+                        Write2AllClients(client, message);
                     }
 
                 }

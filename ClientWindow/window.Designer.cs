@@ -38,6 +38,7 @@
             this.SendMessage_button = new System.Windows.Forms.Button();
             this.ClientName_textBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.sticker_button = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // IP_textBox
@@ -133,11 +134,22 @@
             this.label3.TabIndex = 1;
             this.label3.Text = "匿名：";
             // 
+            // sticker_button
+            // 
+            this.sticker_button.Location = new System.Drawing.Point(521, 462);
+            this.sticker_button.Name = "sticker_button";
+            this.sticker_button.Size = new System.Drawing.Size(57, 62);
+            this.sticker_button.TabIndex = 6;
+            this.sticker_button.Text = "貼圖";
+            this.sticker_button.UseVisualStyleBackColor = true;
+            this.sticker_button.Click += new System.EventHandler(this.sticker_button_Click);
+            // 
             // window
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(590, 536);
+            this.ClientSize = new System.Drawing.Size(586, 536);
+            this.Controls.Add(this.sticker_button);
             this.Controls.Add(this.SendMessage_button);
             this.Controls.Add(this.SendMessage_textBox);
             this.Controls.Add(this.Message_richTextBox);
@@ -167,6 +179,7 @@
         private System.Windows.Forms.Button SendMessage_button;
         private System.Windows.Forms.TextBox ClientName_textBox;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button sticker_button;
     }
 }
 
