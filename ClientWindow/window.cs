@@ -29,7 +29,9 @@ namespace ClientWindow
             public string Sender { get; set; }
             public string SenderIP { get; set; }
             public string Content { get; set; }
-            public string ImageData { get; set; }
+            public int MaxCount { get; set; }
+            public int CurrentCount { get; set; }
+            public byte[] ImageData { get; set; }
             public DateTime Timestamp { get; set; }
         }
 
@@ -145,7 +147,7 @@ namespace ClientWindow
             Message_richTextBox.AppendText(message);
         }
         // 處理接收到的圖片
-        private void UpdateRichTextBox(string message, string ImageData)
+        private void UpdateRichTextBox(string message, byte[] ImageData)
         {
 
             if (Message_richTextBox.InvokeRequired)
@@ -157,7 +159,7 @@ namespace ClientWindow
 
 
             // 将图像复制到剪贴板
-            Image image = Byte2Image(ImageData);
+            Image image = AnalysisImage.Byte2Image(ImageData);
             Clipboard.SetImage(image);
             // 将图像粘贴到 RichTextBox 控件中
             Message_richTextBox.Paste();
@@ -225,69 +227,28 @@ namespace ClientWindow
                 string selectedFilePath = openFileDialog.FileName;
 
                 // 發送貼圖
-                Image SendIamge = ReszieImage(selectedFilePath);
-                string ImageData = Image2Byte(SendIamge);
+                Image SendIamge = AnalysisImage.ReszieImage(selectedFilePath);
+                byte[] ImageData = AnalysisImage.Image2Byte(SendIamge);
+                List<byte[]> ImageDataList = AnalysisImage.ImgDataChunkBy(ImageData, 1500);
 
-                Message message = new Message()
+                for (int i = 0; i < ImageDataList.Count(); i++)
                 {
-                    Type = 1,
-                    Sender = ClientName,
-                    ImageData = ImageData,
-                    Timestamp = DateTime.Now
-                };
-                string json = JsonConvert.SerializeObject(message);
-
-                SendMessage(json);
+                    Message message = new Message()
+                    {
+                        Type = 1,
+                        Sender = ClientName,
+                        MaxCount = ImageDataList.Count(),
+                        CurrentCount = i,
+                        ImageData = ImageDataList[i],
+                        Timestamp = DateTime.Now
+                    };
+                    string json = JsonConvert.SerializeObject(message);
+                    SendMessage(json);
+                }
                 UpdateRichTextBox("自己：\n", ImageData);
             }
         }
 
-        // 把圖片壓成能夠發送的大小
-        private Image ReszieImage(string ImagePath)
-        {
-            // 加载原始图像
-            Image originalImage = Image.FromFile(ImagePath);
-
-            // 指定目标宽度和高度
-            int targetWidth = 50;
-            int targetHeight = 50;
-
-            // 创建目标图像对象
-            Image targetImage = new Bitmap(targetWidth, targetHeight);
-
-            // 创建绘图对象
-            Graphics graphics = Graphics.FromImage(targetImage);
-
-            // 绘制调整后的图像
-            graphics.DrawImage(originalImage, 0, 0, targetWidth, targetHeight);
-
-            return targetImage;
-        }
-
-        // 把圖片壓成發送的文字串
-        private string Image2Byte(Image image)
-        {
-            byte[] imageBytes;
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-                image.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-                imageBytes = memoryStream.ToArray();
-            }
-            string compressedImageBase64String = Convert.ToBase64String(imageBytes);
-            return compressedImageBase64String;
-        }
-
-        // 把接收的文字串解壓成圖片
-        private Image Byte2Image(string imagedata)
-        {
-            byte[] compressedImageBytes = Convert.FromBase64String(imagedata);
-            Image receivedImage;
-            using (MemoryStream memoryStream = new MemoryStream(compressedImageBytes))
-            {
-                receivedImage = Image.FromStream(memoryStream);
-            }
-            return receivedImage;
-        }
 
         
 

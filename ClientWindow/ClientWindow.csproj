@@ -77,6 +77,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnalysisImage.cs" />
     <Compile Include="window.cs">
       <SubType>Form</SubType>
     </Compile>
